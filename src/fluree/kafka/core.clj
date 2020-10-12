@@ -10,6 +10,7 @@
            (java.util Map)))
 
 (defn producer [kafka-servers]
+  "Creates KafkaProducer with string key and value serializers."
   (let [max-message-size (* 10 1024 1024)
         config           {"bootstrap.servers" kafka-servers
                           "max.request.size"  (int max-message-size)}]
@@ -20,7 +21,9 @@
                                   (.configure config false)))))
 
 (defn publish [^Producer producer topic key value]
-  "Serializers in this example are strings. If not already strings, coercion will be attempted."
+  "Serializers are strings, both key and value must be strings.
+  Having a consistent key in Kafka will guarantee downstream consumer(s)
+  will always get records in order at the expense of parallelism."
   (let [record (if key
                  (ProducerRecord. topic key value)
                  (ProducerRecord. topic value))]
