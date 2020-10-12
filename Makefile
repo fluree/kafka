@@ -23,7 +23,7 @@ jar: target/fluree-kafka.jar
 docker: target/fluree-kafka.standalone.jar
 	docker build -t fluree/kafka:$(VERSION) .
 
-docker-push: docker-image
+docker-push: docker
 	docker push fluree/kafka:$(VERSION)
 
 docker-push-latest: docker-push
