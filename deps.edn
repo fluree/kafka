@@ -1,0 +1,17 @@
+{:deps  {org.clojure/clojure                         {:mvn/version "1.10.1"}
+         com.fluree/db                               {:mvn/version "0.17.0"}
+         org.apache.kafka/kafka-clients              {:mvn/version "2.6.0"}
+         com.fasterxml.jackson.core/jackson-databind {:mvn/version "2.11.3"}}
+ :paths ["src" "resources"]
+ :aliases
+        {:dev
+         {:extra-paths ["dev"]
+          :extra-deps  {org.clojure/tools.namespace {:mvn/version "1.0.0"}}
+          :main-opts   ["-e" "(require,'user)"
+                        "-e" "(in-ns,'user)"]}
+
+         :uberjar
+         {:extra-deps {seancorfield/depstar {:mvn/version "1.1.117"}}
+          :main-opts  ["-m" "hf.depstar.uberjar" "-X" "fluree/kafka/.*\\.clj[cs]?$" "target/fluree-kafka.standalone.jar"
+                       "-C" "-m" "fluree.kafka.core"]}}}
+
