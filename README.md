@@ -85,6 +85,9 @@ last checkpointed block and 'catch up' as necessary. To avoid an infinite loop, 
 ledger should be used for this, or this producer would want to filter out
 those transactions and not checkpoint or propagate them.
 
+d) If running Kafka, it also means you are running Zookeeper. Zookeeper does this
+sort of thing for a living.
+
 ### Duplicates
 If it is possible multiple of this service could be running at the same time,
 i.e. perhaps via a rolling upgrade, it would mean the same block could be 
@@ -98,6 +101,8 @@ An alternative could be to create a 'lock' by extending (c) above to also
 include a server-name, and ideally a lock-time, that would allow any other
 service to see that another server is actively processing events and it should
 stand-by.
+
+Another option if leaning into Zookeeper as per (d) above is to just utilize it.
 
 
 
