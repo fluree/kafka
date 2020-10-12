@@ -38,7 +38,8 @@
     (System/exit 1)))
 
 (defn startup [config]
-  "Returns 'system' as a map to "
+  "Returns map 'system' which has handles on objects/services (Fluree connection, Kafka producer, etc)
+   which is used to shut down the service when closing."
   (let [{:keys [fluree-servers fluree-ledger kafka-servers kafka-topic]
          :or   {fluree-servers "http://localhost:8090"
                 fluree-ledger  "test/ledger"
@@ -66,17 +67,17 @@
      :closed?        (async/chan)}))
 
 (defn close [system]
-  "Shuts down / releases resources"
+  "Shuts down / releases resources."
   (let [{:keys [^Producer producer conn close-listener closed?]} system]
     (log/info "Shutting down!")
-    (async/put! closed? :closed)                            ;; formally close out
     (.close producer)                                       ;; close Kafka producer
     (close-listener)                                        ;; close Fluree ledger listener
     (fdb/close conn)                                        ;; close Fluree connection
+    (async/put! closed? :closed)                            ;; formally close out
     (log/info "Shut down complete.")))
 
 (defn wait-until-closed [system]
-  "block until explicitly closed to keep process running"
+  "Block until explicitly closed to keep process running."
   (async/<!! (:closed? system)))
 
 (defn -main [& args]
